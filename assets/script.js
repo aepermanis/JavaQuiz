@@ -37,7 +37,8 @@ startButton.addEventListener("click", function(){
 
     var time = 100;
     list.innerHTML = ""
-    paragraph.textContent
+    paragraph.textContent = ""
+
     paragraph.textContent = question1.question;
 
     for(let i = 0; i < question1.answer.length; i++) {
@@ -48,6 +49,9 @@ startButton.addEventListener("click", function(){
 
 
     };
+
+    
+    
 
     var timeInterval = setInterval(function () {
         // As long as the `timeLeft` is greater than 1
