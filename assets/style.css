@@ -1,0 +1,26 @@
+
+body{
+    background-color: bisque;
+}
+
+button {
+    background-color: aqua;
+    color: black;
+    width: 100px;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+p{
+    color: red;
+    text-emphasis: bold;
+
+}
+
+#time {
+    display: inline-flex;
+    align-items: end;
+    justify-content: end;
+
+}
