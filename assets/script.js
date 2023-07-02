@@ -3,6 +3,9 @@ var timer = document.querySelector('#time');
 var paragraph = document.querySelector('#message');
 var container = document.querySelector("#container");
 var list = document.querySelector('#list');
+var time = 100;
+var feedBack = document.querySelector("#feedback");
+var correct = 0
 
 var question1 = {
     question: "what",
@@ -26,8 +29,8 @@ var question3 = {
 
 var question4 = {
     question: "where",
-    answer: ['a','b','c','d'],
-    correct: 'd'
+    answer: ['ajkf;','bjkf','cjkf','djkf'],
+    correct: 'djkf'
 
 };
 
@@ -37,7 +40,6 @@ var questionCur = 0
 
 startButton.addEventListener("click", function(){
 
-    var time = 100;
     list.innerHTML = "";
     paragraph.textContent = "";
 
@@ -52,15 +54,19 @@ startButton.addEventListener("click", function(){
         // When `timeLeft` is equal to 1, rename to 'second' instead of 'seconds'
         timer.textContent = time + ' second remaining';
         time--;
-      } else {
+      } else if(time === 0) {
         // Once `timeLeft` gets to 0, set `timerEl` to an empty string
         timer.textContent = '';
         // Use `clearInterval()` to stop the timer
         clearInterval(timeInterval);
         // Call the `displayMessage()` function
         displayMessage();
+      }else {
+        clearInterval(timeInterval);
       }
     }, 1000);
+
+    let ansButton = [];
 
     paragraph.textContent = questionSet[questionCur].question;
 
@@ -69,10 +75,16 @@ startButton.addEventListener("click", function(){
 
     };
 
-    var ansButton = document.querySelectorAll(".ans");
-    
+    ansButton = document.querySelectorAll(".ans");
+
     for(let i = 0; i < ansButton.length; i++){
-      ansButton[i].addEventListener("click", function() {
+      ansButton[i].addEventListener("click", nextQuestion);
+    }
+
+    
+    
+      
+      /*{
         if(ansButton[i].innerHTML === questionSet[questionCur].correct){
           list.innerHTML = ""
           questionCur = questionCur + 1;
@@ -99,15 +111,40 @@ startButton.addEventListener("click", function(){
         time = time-10;
       };
     });
-  };
+  };*/
 
   
   });
 
 
-
-
-
+function nextQuestion(Event) {
+  feedBack.textContent = "";
+  let x = Event.target;
+  if((x.innerHTML === questionSet[questionCur].correct) && (questionCur != questionSet.length-1)){
+    list.innerHTML = "";
+    questionCur = questionCur + 1;
+    paragraph.textContent = questionSet[questionCur].question;
+    for(let i = 0; i < questionSet[questionCur].answer.length; i++) {
+      list.innerHTML += "<li><button class = 'ans'>" + questionSet[questionCur].answer[i] + "</button></li>"
+    };
+    ansButton = document.querySelectorAll(".ans");
+    for(let i = 0; i < ansButton.length; i++){
+      ansButton[i].addEventListener("click", nextQuestion);
+    };
+    feedBack.textContent = "Correct!";
+    correct = correct + 1;
+  } else if ((x.innerHTML === questionSet[questionCur].correct) && (questionCur === questionSet.length-1)){
+    time = -1
+    timer.textContent = ""
+    correct = correct + 1;
+      paragraph.textContent = "Congratulations!";
+      list.innerHTML = "";
+      feedBack.textContent = "You scored " + (correct/questionSet.length)*100 + "%!"
+  }  else {
+    time = time - 10;
+    feedBack.textContent = "Wrong!"
+  }
+};
 
 
 
