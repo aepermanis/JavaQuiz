@@ -5,64 +5,76 @@ const container = document.querySelector("#container");
 const list = document.querySelector('.list');
 let time = 100;
 const feedBack = document.querySelector("#feedback");
-let correct = 0
-const hideButton = document.querySelector('.start-button')
+let correct = 0;
+const startDiv = document.querySelector('.start-button');
+const highScore = document.querySelector('.scores');
+
+//populates all the high scores in local storage
+highScore.addEventListener('click', function() {
+  list.innerHTML = "";
+  feedBack.textContent = "";
+  paragraph.textContent = "";
+  let intialsArray = Object.keys(localStorage);
+  for (let i = 0; i < intialsArray.length; i++){
+    let x = localStorage.getItem(intialsArray[i])
+    list.innerHTML += '<p class = "data">' + intialsArray[i] + ': ' + x + '</p>'
+  }
+})
 
 
+//the questions for the quiz
 var question1 = {
-    question: "what",
-    answer: ['a','b','c','d'],
-    correct: 'a',
+    question: "What determines the functionality of a simple webpage",
+    answer: ['Javascript','Capitalism','HTML','CSS'],
+    correct: 'Javascript',
 };
 
 var question2 = {
-    question: "why",
-    answer: ['ag','bg','cg','dg'],
-    correct: 'dg'
+    question: "What is used to indicate a class name",
+    answer: ['#',';','===','.'],
+    correct: '.'
 
 };
 
 var question3 = {
-    question: "when",
-    answer: ['agf','bgf','cgf','dgf'],
-    correct: 'cgf'
+    question: "What is the command to pull changes from github into a repo",
+    answer: ['cd . .','mkdir','git pull origin main','git add -A'],
+    correct: 'git pull origin main'
 
 };
 
 var question4 = {
-    question: "where",
-    answer: ['ajkf;','bjkf','cjkf','djkf'],
-    correct: 'djkf'
+    question: "Where would you find the styling for a webpage",
+    answer: ['HTML','Javascript','CSS','The URL'],
+    correct: 'CSS'
 
 };
 
+//array of questions
 var questionSet = [question1,question2,question3,question4];
 
+//sets the current question to the first 
 var questionCur = 0
 
+
+
+//on start button click the quiz will populate the first set of questions and begin the timer
 startButton.addEventListener("click", function () {
     
-    //hideButton.style.display = none;
+    startDiv.innerHTML = "";
     list.innerHTML = "";
     paragraph.textContent = "";
 
     var timeInterval = setInterval(function () {
-      // As long as the `timeLeft` is greater than 1
       if (time > 1 && time <= 100) {
-        // Set the `textContent` of `timerEl` to show the remaining seconds
         timer.textContent = time + ' seconds remaining';
-        // Decrement `timeLeft` by 1
         time--;
       } else if (time === 1) {
-        // When `timeLeft` is equal to 1, rename to 'second' instead of 'seconds'
         timer.textContent = time + ' second remaining';
         time--;
       } else if(time <= 0) {
-        // Once `timeLeft` gets to 0, set `timerEl` to an empty string
         timer.textContent = '';
-        // Use `clearInterval()` to stop the timer
         clearInterval(timeInterval);
-        // Call the `displayMessage()` function
         displayMessage();
       }else {
         clearInterval(timeInterval);
@@ -83,13 +95,9 @@ startButton.addEventListener("click", function () {
     for(let i = 0; i < ansButton.length; i++){
       ansButton[i].addEventListener("click", nextQuestion);
     }
-
-    //list.addEventListener('click', nextQuestion(EventTarget));
-
-  
   });
 
-
+//moves to the next question
 function nextQuestion(Event) {
   
   feedBack.textContent = "";
@@ -105,7 +113,6 @@ function nextQuestion(Event) {
     for(let i = 0; i < ansButton.length; i++){
       ansButton[i].addEventListener("click", nextQuestion);
     }
-    //list.addEventListener('click', nextQuestion(EventTarget));
     feedBack.textContent = "Correct!";
     correct = correct + 1;
   } else if ((x.innerHTML === questionSet[questionCur].correct) && (questionCur === questionSet.length-1)){
@@ -114,7 +121,10 @@ function nextQuestion(Event) {
     correct = correct + 1;
       paragraph.textContent = "Congratulations!";
       list.innerHTML = "";
-      feedBack.textContent = "You scored " + (correct/questionSet.length)*100 + "%!"
+      let percentage = (correct/questionSet.length)*100
+      feedBack.textContent = "You scored " + percentage + "%!"
+      saveHighScore(percentage);
+      
 
   }  else {
     time = time - 10;
@@ -124,7 +134,7 @@ function nextQuestion(Event) {
 
 
 
-
+//asks player to try again if they fail
  function displayMessage() {
     feedBack.textContent = ""
     paragraph.textContent = "GAMEOVER!"
@@ -132,29 +142,21 @@ function nextQuestion(Event) {
     list.insertAdjacentHTML('beforeend', '<button id = "try-again">Try Again?</button>');
     document.querySelector('#try-again').addEventListener('click', function () {
     
-      //hideButton.style.display = none;
       list.innerHTML = "";
       paragraph.textContent = "";
       questionCur = 0
       time = 100;
 
       var timeInterval2 =  setInterval(function () {
-        // As long as the `timeLeft` is greater than 1
         if (time > 1 && time <= 100) {
-          // Set the `textContent` of `timerEl` to show the remaining seconds
           timer.textContent = time + ' seconds remaining';
-          // Decrement `timeLeft` by 1
           time--;
         } else if (time === 1) {
-          // When `timeLeft` is equal to 1, rename to 'second' instead of 'seconds'
           timer.textContent = time + ' second remaining';
           time--;
         } else if(time <= 0) {
-          // Once `timeLeft` gets to 0, set `timerEl` to an empty string
           timer.textContent = '';
-          // Use `clearInterval()` to stop the timer
           clearInterval(timeInterval2);
-          // Call the `displayMessage()` function
           displayMessage();
         }else {
           clearInterval(timeInterval2);
@@ -175,9 +177,26 @@ function nextQuestion(Event) {
       for(let i = 0; i < ansButton.length; i++){
         ansButton[i].addEventListener("click", nextQuestion);
       }
-  
-      //list.addEventListener('click', nextQuestion(EventTarget));
-  
-    
     });;
 };
+
+ //returns html for a submission button
+function createSave() {
+  return '<div class = "start-button"> <input type = "text" id = "Intials" placeholder = "type your intials"> <button id = "submit">Submit</button> </div>'
+};
+
+//saves the high score to local storage
+function saveHighScore(score){
+  list.insertAdjacentHTML('beforeend', createSave());
+  document.querySelector('#submit').addEventListener('click', function() {
+      const intial = document.getElementById('Intials').value;
+    console.log(intial);
+    console.log(score);
+    localStorage.setItem(intial, score);
+    list.innerHTML = ""
+    paragraph.textContent = "Awesome Job"
+  });
+
+}
+
+
