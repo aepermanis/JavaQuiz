@@ -8,6 +8,11 @@ body{
     justify-content: center;
 }
 
+.scores:hover{
+    color:blue;
+}
+
+
 .elements{
     display: flex;
     justify-content: center;
@@ -28,6 +33,8 @@ body{
     border-radius: 14px;
     background-color: blue;
     color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: x-large;
 }
 
 

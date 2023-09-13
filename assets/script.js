@@ -114,7 +114,10 @@ function nextQuestion(Event) {
     correct = correct + 1;
       paragraph.textContent = "Congratulations!";
       list.innerHTML = "";
-      feedBack.textContent = "You scored " + (correct/questionSet.length)*100 + "%!"
+      let percentage = (correct/questionSet.length)*100
+      feedBack.textContent = "You scored " + percentage + "%!"
+      saveHighScore(percentage);
+      
 
   }  else {
     time = time - 10;
